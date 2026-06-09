@@ -1,0 +1,14 @@
+{
+  "name": "mini-keyboard",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Static introduction and usage guide for the mini-keyboard keyd macro pad tool.",
+  "scripts": {
+    "dev": "npx wrangler dev",
+    "deploy": "npx wrangler deploy",
+    "check": "npx wrangler deploy --dry-run"
+  },
+  "devDependencies": {
+    "wrangler": "^4.98.0"
+  }
+}

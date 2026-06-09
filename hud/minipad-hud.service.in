@@ -1,0 +1,21 @@
+[Unit]
+Description=MiniPad HUD (keyd mode panel)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+# @HUD_PY@ is substituted with the absolute path by install-hud.sh
+ExecStart=/usr/bin/python3 @HUD_PY@
+Restart=on-failure
+RestartSec=2
+# Visibility tunables (uncomment to override; or use `systemctl --user edit`):
+#   Shown only while the pad is connected; collapses to a mini ball after
+#   MINIPAD_IDLE_SECS of no pad activity, and expands to the full panel on next
+#   use (or a click on the ball).
+# Environment=MINIPAD_IDLE_SECS=10
+# Environment=MINIPAD_AUTOHIDE=1
+# Environment=MINIPAD_OPACITY=0.70
+
+[Install]
+WantedBy=graphical-session.target

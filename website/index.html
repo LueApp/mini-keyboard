@@ -41,7 +41,7 @@
           </p>
           <div class="hero-actions" aria-label="Main actions">
             <a class="primary-action" href="#quickstart">Install guide</a>
-            <a class="secondary-action" href="#approach">How it works</a>
+            <a class="secondary-action" href="#approach">Choose setup path</a>
           </div>
           <dl class="fact-row" aria-label="Compatibility facts">
             <div><dt>Input layer</dt><dd>keyd</dd></div>
@@ -58,78 +58,52 @@
     <section id="approach" class="section-band section-dark" aria-labelledby="approach-title">
       <div class="section-inner">
         <div class="section-heading">
-          <p class="eyebrow">Approach</p>
-          <h2 id="approach-title">Use web2local to run trusted local scripts from the website.</h2>
+          <p class="eyebrow">Two ways to use it</p>
+          <h2 id="approach-title">Install manually, or let this page run supported local actions.</h2>
           <p>
-            This hosted guide can optionally talk to a web2local daemon on
-            <code>127.0.0.1:7878</code>. The page sends a named action, web2local
-            checks the page origin, shows its native approval dialog when needed,
-            then runs the local helper inside your checked-out mini-keyboard repo.
+            Manual setup is the default path. If you already use
+            <a href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener">web2local</a>,
+            this page can also trigger a small local helper for status checks,
+            validation, logs, and HUD setup.
           </p>
         </div>
 
-        <div class="approach-flow" aria-label="How mini-keyboard works">
-          <div class="flow-card">
-            <strong>Website</strong>
-            <span>Button or JavaScript call</span>
-          </div>
-          <div class="flow-arrow" aria-hidden="true">-></div>
-          <div class="flow-card">
-            <strong>web2local</strong>
-            <span>Local daemon and approval dialog</span>
-          </div>
-          <div class="flow-arrow" aria-hidden="true">-></div>
-          <div class="flow-card">
-            <strong>Helper script</strong>
-            <span>tools/web2local-minipad.sh</span>
-          </div>
-          <div class="flow-arrow" aria-hidden="true">-></div>
-          <div class="flow-card">
-            <strong>Local machine</strong>
-            <span>Validate, inspect, or start the HUD</span>
-          </div>
-        </div>
+        <div class="use-paths">
+          <article class="use-path">
+            <div class="path-kicker">Option 1</div>
+            <h3>Manual terminal setup</h3>
+            <p>
+              Clone the repo, install keyd, apply the keyd profile, then start
+              the HUD. This path works without any browser-to-local bridge.
+            </p>
+            <pre><code>git clone https://github.com/LueApp/mini-keyboard.git
+cd mini-keyboard
+sudo apt-get install -y keyd
+./install.sh
+hud/install-hud.sh</code></pre>
+            <a class="path-link" href="#quickstart">Read the manual steps</a>
+          </article>
 
-        <div class="approach-grid">
-          <article class="approach-card">
-            <h3>1. Start web2local</h3>
+          <article class="use-path">
+            <div class="path-kicker">Option 2</div>
+            <h3>Use web2local from this page</h3>
             <p>
-              Run the web2local daemon locally. Keep this page on the graylist
-              while testing so each command shows an approval prompt.
+              Start web2local locally, then use this page to call
+              <code>tools/web2local-minipad.sh</code>. The helper only accepts
+              named actions, not free-form shell input.
             </p>
-          </article>
-          <article class="approach-card">
-            <h3>2. Point to the checkout</h3>
-            <p>
-              The browser cannot discover local paths. Set the local repo path,
-              then the page calls <code>tools/web2local-minipad.sh</code>.
-            </p>
-          </article>
-          <article class="approach-card">
-            <h3>3. Use named actions</h3>
-            <p>
-              The helper accepts only a small action list: status, validation,
-              recent keyd logs, install HUD, and uninstall HUD.
-            </p>
-          </article>
-          <article class="approach-card">
-            <h3>4. Keep root work explicit</h3>
-            <p>
-              Applying the keyd config still belongs in a terminal because it may
-              require sudo. Use web2local for inspection and user-level HUD tasks.
-            </p>
+            <pre><code>python3 /home/lue/boring/web2local/daemon.py</code></pre>
+            <a class="path-link" href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener">Open web2local</a>
           </article>
         </div>
 
         <div class="local-runner" aria-label="web2local launcher">
           <div class="runner-main">
-            <h3>Try it from this page</h3>
+            <h3>web2local actions</h3>
             <p>
-              Start web2local, trust this origin, then run a helper action against
-              your local checkout. The command web2local receives is shown in its
-              native approval dialog before execution unless you whitelist the page.
+              After web2local is running, set the local checkout path and run one
+              of the supported helper actions.
             </p>
-            <pre class="runner-command"><code>python3 /home/lue/boring/web2local/daemon.py</code></pre>
             <label class="runner-label" for="localPath">Local checkout path</label>
             <input id="localPath" class="runner-input" value="/home/lue/boring/mini-keyboard" spellcheck="false" />
             <div class="runner-actions">
@@ -143,19 +117,6 @@
           </div>
           <pre class="runner-output" id="runnerOutput"><code>web2local output appears here.</code></pre>
         </div>
-
-        <article class="code-example">
-          <h3>Minimal JavaScript pattern</h3>
-          <pre><code>const w2l = new Web2Local();
-await w2l.requestAccess();
-
-const r = await w2l.run(
-  "/home/lue/boring/mini-keyboard/tools/web2local-minipad.sh",
-  ["status"]
-);
-
-console.log(r.stdout, r.stderr, r.exit_code);</code></pre>
-        </article>
       </div>
     </section>
 

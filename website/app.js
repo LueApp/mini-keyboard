@@ -178,7 +178,7 @@ document.querySelectorAll('[data-runner]').forEach((button) => {
         '',
         String(error.message || error),
         '',
-        'Start the web2local daemon and add this site to the graylist or whitelist.'
+        'Start web2local locally and grant this site access.'
       ].join('\n'));
     }
   });

@@ -198,23 +198,3 @@ hud/install-hud.sh     KWin pin rule + systemd --user autostart for the panel
 hud/uninstall-hud.sh   remove the panel rule + service
 tools/keyout.py        print the keys keyd emits (reads its virtual device)
 ```
-
-## Web page / Cloudflare deploy
-
-The introduction and usage guide lives in `website/`.
-
-Cloudflare Pages dashboard settings:
-
-```text
-Framework preset: None
-Build command: (leave empty)
-Build output directory: website
-Root directory: /
-```
-
-For a Workers assets deploy instead:
-
-```bash
-npm install
-npm run deploy
-```

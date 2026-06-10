@@ -18,6 +18,7 @@
       <span>mini-keyboard</span>
     </a>
     <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#approach">Approach</a>
       <a href="#quickstart">Start</a>
       <a href="#modes">Modes</a>
       <a href="#edit">Edit</a>
@@ -40,7 +41,7 @@
           </p>
           <div class="hero-actions" aria-label="Main actions">
             <a class="primary-action" href="#quickstart">Install guide</a>
-            <a class="secondary-action" href="#modes">Explore modes</a>
+            <a class="secondary-action" href="#approach">How it works</a>
           </div>
           <dl class="fact-row" aria-label="Compatibility facts">
             <div><dt>Input layer</dt><dd>keyd</dd></div>
@@ -51,6 +52,75 @@
         <figure class="hero-visual">
           <img src="assets/minipad-preview.svg" alt="Preview of the 4 by 3 macro pad and the live HUD panel." />
         </figure>
+      </div>
+    </section>
+
+    <section id="approach" class="section-band section-dark" aria-labelledby="approach-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="eyebrow">Approach</p>
+          <h2 id="approach-title">Use it as a local input layer, not as a web app.</h2>
+          <p>
+            The web page is the guide. The actual tool stays on your Linux desktop:
+            keyd owns the remapping at the kernel input layer, and the HUD gives you
+            live feedback plus a safer way to edit the keyd file.
+          </p>
+        </div>
+
+        <div class="approach-flow" aria-label="How mini-keyboard works">
+          <div class="flow-card">
+            <strong>USB mini pad</strong>
+            <span>Factory keys 1-9, 0, a, b</span>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">-></div>
+          <div class="flow-card">
+            <strong>keyd</strong>
+            <span>Grabs only k:4132:2107</span>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">-></div>
+          <div class="flow-card">
+            <strong>Modes</strong>
+            <span>apps, nav, num</span>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">-></div>
+          <div class="flow-card">
+            <strong>HUD</strong>
+            <span>Shows and edits the live map</span>
+          </div>
+        </div>
+
+        <div class="approach-grid">
+          <article class="approach-card">
+            <h3>1. Keep the scope narrow</h3>
+            <p>
+              The config targets the mini pad's keyboard interface by USB ID. Your
+              normal keyboards keep their usual behavior.
+            </p>
+          </article>
+          <article class="approach-card">
+            <h3>2. Treat apps as home base</h3>
+            <p>
+              The apps layer is always the clean base. Press <code>1+3</code> to
+              clear back to it, <code>4+6</code> for navigation, and <code>7+9</code>
+              for number entry.
+            </p>
+          </article>
+          <article class="approach-card">
+            <h3>3. Let the HUD confirm state</h3>
+            <p>
+              Keep the HUD running while learning the pad. It expands when you use
+              the device and collapses to a small mode dot when idle.
+            </p>
+          </article>
+          <article class="approach-card">
+            <h3>4. Edit through validation</h3>
+            <p>
+              Prefer the panel editor for remaps. Saves go through the root helper,
+              keyd validation, restart, and rollback instead of directly trusting a
+              hand-edited config.
+            </p>
+          </article>
+        </div>
       </div>
     </section>
 

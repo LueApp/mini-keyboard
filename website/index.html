@@ -74,13 +74,8 @@
             <h3>Manual terminal setup</h3>
             <p>
               Clone the repo, install keyd, apply the keyd profile, then start
-              the HUD. This path works without any browser-to-local bridge.
+              the HUD. Use the Start section below for the exact commands.
             </p>
-            <pre><code>git clone https://github.com/LueApp/mini-keyboard.git
-cd mini-keyboard
-sudo apt-get install -y keyd
-./install.sh
-hud/install-hud.sh</code></pre>
             <a class="path-link" href="#quickstart">Read the manual steps</a>
           </article>
 
@@ -124,7 +119,7 @@ hud/install-hud.sh</code></pre>
       <div class="section-inner split-layout">
         <div>
           <p class="eyebrow">Quick start</p>
-          <h2 id="quickstart-title">Install the keyd profile, then start the HUD.</h2>
+          <h2 id="quickstart-title">Manual setup from a terminal.</h2>
           <p>
             The installer copies <code>config/default.conf</code> to <code>/etc/keyd/</code>,
             restarts keyd so the default mode is clean, and installs the root helper used by
@@ -134,21 +129,29 @@ hud/install-hud.sh</code></pre>
         <div class="command-stack" aria-label="Install commands">
           <article class="command-card">
             <div class="command-head">
-              <h3>1. Install keyd</h3>
+              <h3>1. Clone the repo</h3>
+              <button type="button" class="copy-button" data-copy="git clone https://github.com/LueApp/mini-keyboard.git && cd mini-keyboard">Copy</button>
+            </div>
+            <pre><code>git clone https://github.com/LueApp/mini-keyboard.git
+cd mini-keyboard</code></pre>
+          </article>
+          <article class="command-card">
+            <div class="command-head">
+              <h3>2. Install keyd</h3>
               <button type="button" class="copy-button" data-copy="sudo apt-get install -y keyd">Copy</button>
             </div>
             <pre><code>sudo apt-get install -y keyd</code></pre>
           </article>
           <article class="command-card">
             <div class="command-head">
-              <h3>2. Apply the mini-pad config</h3>
+              <h3>3. Apply the mini-pad config</h3>
               <button type="button" class="copy-button" data-copy="./install.sh">Copy</button>
             </div>
             <pre><code>./install.sh</code></pre>
           </article>
           <article class="command-card">
             <div class="command-head">
-              <h3>3. Launch the HUD</h3>
+              <h3>4. Launch the HUD</h3>
               <button type="button" class="copy-button" data-copy="hud/install-hud.sh">Copy</button>
             </div>
             <pre><code>hud/install-hud.sh</code></pre>

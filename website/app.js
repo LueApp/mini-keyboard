@@ -40,6 +40,40 @@ const modes = {
   }
 };
 
+class Web2Local {
+  constructor(port = 7878) {
+    this.base = `http://127.0.0.1:${port}`;
+  }
+
+  async status() {
+    const response = await fetch(`${this.base}/status`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  }
+
+  async requestAccess() {
+    const response = await fetch(`${this.base}/handshake`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ origin: window.location.origin })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+    return data;
+  }
+
+  async run(command, args = []) {
+    const response = await fetch(`${this.base}/run`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ command, args })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+    return data;
+  }
+}
+
 const padGrid = document.querySelector('#padGrid');
 const title = document.querySelector('#modeTitle');
 const description = document.querySelector('#modeDescription');
@@ -47,6 +81,9 @@ const base = document.querySelector('#modeBase');
 const chord = document.querySelector('#modeChord');
 const action = document.querySelector('#modeAction');
 const tabs = [...document.querySelectorAll('.mode-tab')];
+const runnerOutput = document.querySelector('#runnerOutput code');
+const localPath = document.querySelector('#localPath');
+const w2l = new Web2Local();
 
 function renderMode(modeName) {
   const mode = modes[modeName];
@@ -86,6 +123,63 @@ document.querySelectorAll('.copy-button').forEach((button) => {
       setTimeout(() => {
         button.textContent = 'Copy';
       }, 1400);
+    }
+  });
+});
+
+function setRunnerOutput(text) {
+  if (runnerOutput) runnerOutput.textContent = text;
+}
+
+function helperPath() {
+  const path = localPath.value.trim().replace(/\/+$/, '');
+  return `${path}/tools/web2local-minipad.sh`;
+}
+
+async function runHelper(actionName) {
+  if (actionName === 'install-hud') {
+    const ok = window.confirm('Run the local HUD installer through web2local?');
+    if (!ok) return;
+  }
+
+  const command = helperPath();
+  setRunnerOutput(`running: ${command} ${actionName}`);
+  const result = await w2l.run(command, [actionName]);
+  const output = [
+    `$ ${command} ${actionName}`,
+    '',
+    result.stdout || '',
+    result.stderr ? `stderr:\n${result.stderr}` : '',
+    `exit_code: ${result.exit_code}`
+  ].filter(Boolean).join('\n');
+  setRunnerOutput(output);
+}
+
+document.querySelectorAll('[data-runner]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const actionName = button.dataset.runner;
+    try {
+      if (actionName === 'daemon') {
+        setRunnerOutput('checking http://127.0.0.1:7878/status');
+        const status = await w2l.status();
+        setRunnerOutput(JSON.stringify(status, null, 2));
+        return;
+      }
+      if (actionName === 'access') {
+        setRunnerOutput(`requesting access for ${window.location.origin}`);
+        const access = await w2l.requestAccess();
+        setRunnerOutput(JSON.stringify(access, null, 2));
+        return;
+      }
+      await runHelper(actionName);
+    } catch (error) {
+      setRunnerOutput([
+        'web2local request failed.',
+        '',
+        String(error.message || error),
+        '',
+        'Start the web2local daemon and add this site to the graylist or whitelist.'
+      ].join('\n'));
     }
   });
 });

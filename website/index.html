@@ -59,68 +59,103 @@
       <div class="section-inner">
         <div class="section-heading">
           <p class="eyebrow">Approach</p>
-          <h2 id="approach-title">Use it as a local input layer, not as a web app.</h2>
+          <h2 id="approach-title">Use web2local to run trusted local scripts from the website.</h2>
           <p>
-            The web page is the guide. The actual tool stays on your Linux desktop:
-            keyd owns the remapping at the kernel input layer, and the HUD gives you
-            live feedback plus a safer way to edit the keyd file.
+            This hosted guide can optionally talk to a web2local daemon on
+            <code>127.0.0.1:7878</code>. The page sends a named action, web2local
+            checks the page origin, shows its native approval dialog when needed,
+            then runs the local helper inside your checked-out mini-keyboard repo.
           </p>
         </div>
 
         <div class="approach-flow" aria-label="How mini-keyboard works">
           <div class="flow-card">
-            <strong>USB mini pad</strong>
-            <span>Factory keys 1-9, 0, a, b</span>
+            <strong>Website</strong>
+            <span>Button or JavaScript call</span>
           </div>
           <div class="flow-arrow" aria-hidden="true">-></div>
           <div class="flow-card">
-            <strong>keyd</strong>
-            <span>Grabs only k:4132:2107</span>
+            <strong>web2local</strong>
+            <span>Local daemon and approval dialog</span>
           </div>
           <div class="flow-arrow" aria-hidden="true">-></div>
           <div class="flow-card">
-            <strong>Modes</strong>
-            <span>apps, nav, num</span>
+            <strong>Helper script</strong>
+            <span>tools/web2local-minipad.sh</span>
           </div>
           <div class="flow-arrow" aria-hidden="true">-></div>
           <div class="flow-card">
-            <strong>HUD</strong>
-            <span>Shows and edits the live map</span>
+            <strong>Local machine</strong>
+            <span>Validate, inspect, or start the HUD</span>
           </div>
         </div>
 
         <div class="approach-grid">
           <article class="approach-card">
-            <h3>1. Keep the scope narrow</h3>
+            <h3>1. Start web2local</h3>
             <p>
-              The config targets the mini pad's keyboard interface by USB ID. Your
-              normal keyboards keep their usual behavior.
+              Run the web2local daemon locally. Keep this page on the graylist
+              while testing so each command shows an approval prompt.
             </p>
           </article>
           <article class="approach-card">
-            <h3>2. Treat apps as home base</h3>
+            <h3>2. Point to the checkout</h3>
             <p>
-              The apps layer is always the clean base. Press <code>1+3</code> to
-              clear back to it, <code>4+6</code> for navigation, and <code>7+9</code>
-              for number entry.
+              The browser cannot discover local paths. Set the local repo path,
+              then the page calls <code>tools/web2local-minipad.sh</code>.
             </p>
           </article>
           <article class="approach-card">
-            <h3>3. Let the HUD confirm state</h3>
+            <h3>3. Use named actions</h3>
             <p>
-              Keep the HUD running while learning the pad. It expands when you use
-              the device and collapses to a small mode dot when idle.
+              The helper accepts only a small action list: status, validation,
+              recent keyd logs, install HUD, and uninstall HUD.
             </p>
           </article>
           <article class="approach-card">
-            <h3>4. Edit through validation</h3>
+            <h3>4. Keep root work explicit</h3>
             <p>
-              Prefer the panel editor for remaps. Saves go through the root helper,
-              keyd validation, restart, and rollback instead of directly trusting a
-              hand-edited config.
+              Applying the keyd config still belongs in a terminal because it may
+              require sudo. Use web2local for inspection and user-level HUD tasks.
             </p>
           </article>
         </div>
+
+        <div class="local-runner" aria-label="web2local launcher">
+          <div class="runner-main">
+            <h3>Try it from this page</h3>
+            <p>
+              Start web2local, trust this origin, then run a helper action against
+              your local checkout. The command web2local receives is shown in its
+              native approval dialog before execution unless you whitelist the page.
+            </p>
+            <pre class="runner-command"><code>python3 /home/lue/boring/web2local/daemon.py</code></pre>
+            <label class="runner-label" for="localPath">Local checkout path</label>
+            <input id="localPath" class="runner-input" value="/home/lue/boring/mini-keyboard" spellcheck="false" />
+            <div class="runner-actions">
+              <button type="button" class="runner-button" data-runner="daemon">Check daemon</button>
+              <button type="button" class="runner-button" data-runner="access">Request access</button>
+              <button type="button" class="runner-button" data-runner="status">Repo status</button>
+              <button type="button" class="runner-button" data-runner="validate">Validate scripts</button>
+              <button type="button" class="runner-button" data-runner="keyd-log">Recent keyd log</button>
+              <button type="button" class="runner-button runner-danger" data-runner="install-hud">Install HUD</button>
+            </div>
+          </div>
+          <pre class="runner-output" id="runnerOutput"><code>web2local output appears here.</code></pre>
+        </div>
+
+        <article class="code-example">
+          <h3>Minimal JavaScript pattern</h3>
+          <pre><code>const w2l = new Web2Local();
+await w2l.requestAccess();
+
+const r = await w2l.run(
+  "/home/lue/boring/mini-keyboard/tools/web2local-minipad.sh",
+  ["status"]
+);
+
+console.log(r.stdout, r.stderr, r.exit_code);</code></pre>
+        </article>
       </div>
     </section>
 

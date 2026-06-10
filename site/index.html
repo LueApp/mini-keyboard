@@ -18,8 +18,7 @@
       <span>mini-keyboard</span>
     </a>
     <nav class="site-nav" aria-label="Primary navigation">
-      <a href="#approach">Approach</a>
-      <a href="#quickstart">Start</a>
+      <a href="#setup">Setup</a>
       <a href="#modes">Modes</a>
       <a href="#edit">Edit</a>
       <a href="#troubleshooting">Fix</a>
@@ -43,8 +42,8 @@
             keyboard stays untouched, on KDE Plasma 6 / Wayland.
           </p>
           <div class="hero-actions" aria-label="Main actions">
-            <a class="primary-action" href="#quickstart">Install guide</a>
-            <a class="secondary-action" href="#approach">Choose setup path</a>
+            <a class="primary-action" href="#setup">Get started</a>
+            <a class="secondary-action" href="#modes">Browse modes</a>
           </div>
           <dl class="fact-row" aria-label="Compatibility facts">
             <div><dt>Input layer</dt><dd>keyd</dd></div>
@@ -58,109 +57,95 @@
       </div>
     </section>
 
-    <section id="approach" class="section-band section-dark" aria-labelledby="approach-title">
+    <section id="setup" class="section-band section-light" aria-labelledby="setup-title">
       <div class="section-inner">
         <div class="section-heading">
-          <p class="eyebrow">Two ways to use it</p>
-          <h2 id="approach-title">Install manually, or let this page run supported local actions.</h2>
+          <p class="eyebrow">Get started</p>
+          <h2 id="setup-title">Install once in a terminal &mdash; then drive upkeep from the browser.</h2>
           <p>
-            Manual setup is the default path. If you already use
-            <a href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener">web2local</a>,
-            this page can also trigger a small local helper for status checks,
-            validation, logs, and HUD setup.
+            The keyd profile is a one-time terminal install. After that, if you run
+            <a href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener">web2local</a>
+            &mdash; a tiny local daemon that runs an allowlisted action only after you approve it in a
+            native dialog, on loopback only &mdash; this page becomes a console for status,
+            validation, keyd logs, and installing or removing the HUD, no terminal needed.
           </p>
         </div>
 
-        <div class="use-paths">
-          <article class="use-path">
-            <div class="path-kicker">Option 1</div>
-            <h3>Manual terminal setup</h3>
-            <p>
-              Clone the repo, install keyd, apply the keyd profile, then start
-              the HUD. Use the Start section below for the exact commands.
-            </p>
-            <a class="path-link" href="#quickstart">Read the manual steps</a>
-          </article>
-
-          <article class="use-path">
-            <div class="path-kicker">Option 2</div>
-            <h3>Use web2local from this page</h3>
-            <p>
-              Start web2local locally, then use this page to call
-              <code>tools/web2local-minipad.sh</code>. The helper only accepts
-              named actions, not free-form shell input.
-            </p>
-            <pre><code>python3 /home/lue/boring/web2local/daemon.py</code></pre>
-            <a class="path-link" href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener">Open web2local</a>
-          </article>
-        </div>
-
-        <div class="local-runner" aria-label="web2local launcher">
-          <div class="runner-main">
-            <h3>web2local actions</h3>
-            <p>
-              After web2local is running, set the local checkout path and run one
-              of the supported helper actions. Each button maps to a single named
-              action &mdash; the page never sends arbitrary shell input.
-            </p>
-            <label class="runner-label" for="localPath">Local checkout path</label>
-            <input id="localPath" class="runner-input" value="/home/lue/boring/mini-keyboard" spellcheck="false" autocomplete="off" />
-            <div class="runner-actions">
-              <button type="button" class="runner-button" data-runner="daemon">Check daemon</button>
-              <button type="button" class="runner-button" data-runner="access">Request access</button>
-              <button type="button" class="runner-button" data-runner="status" data-needs-w2l>Repo / keyd / HUD status</button>
-              <button type="button" class="runner-button" data-runner="validate" data-needs-w2l>Validate scripts</button>
-              <button type="button" class="runner-button" data-runner="keyd-log" data-needs-w2l>Recent keyd log</button>
-              <button type="button" class="runner-button runner-danger" data-runner="install-hud" data-needs-w2l>Install HUD</button>
-              <button type="button" class="runner-button runner-danger" data-runner="uninstall-hud" data-needs-w2l>Uninstall HUD</button>
+        <div class="setup-grid">
+          <article class="setup-card" aria-labelledby="manual-title">
+            <div class="setup-head">
+              <h3 id="manual-title">Manual setup</h3>
+              <span class="setup-tag">terminal &middot; one time</span>
             </div>
-            <p class="runner-status" id="runnerStatus" role="status">web2local status: unknown &mdash; press <strong>Check daemon</strong>.</p>
-          </div>
-          <pre class="runner-output" id="runnerOutput"><code>web2local output appears here.</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <section id="quickstart" class="section-band section-light" aria-labelledby="quickstart-title">
-      <div class="section-inner split-layout">
-        <div>
-          <p class="eyebrow">Quick start</p>
-          <h2 id="quickstart-title">Manual setup from a terminal.</h2>
-          <p>
-            The installer copies <code>config/default.conf</code> to <code>/etc/keyd/</code>,
-            restarts keyd so the default mode is clean, and installs the root helper used by
-            the HUD editor. Run these four steps once, in order.
-          </p>
-        </div>
-        <div class="command-stack" aria-label="Install commands">
-          <article class="command-card">
-            <div class="command-head">
-              <h3>1. Clone the repo</h3>
-              <button type="button" class="copy-button" data-copy="git clone https://github.com/LueApp/mini-keyboard.git && cd mini-keyboard">Copy</button>
-            </div>
-            <pre><code>git clone https://github.com/LueApp/mini-keyboard.git
+            <p class="setup-lead">
+              The installer copies <code>config/default.conf</code> to <code>/etc/keyd/</code>,
+              restarts keyd, and installs the HUD editor's root helper. Run these four steps once.
+            </p>
+            <ol class="install-steps">
+              <li>
+                <div class="step-row">
+                  <span class="step-label">Clone the repo</span>
+                  <button type="button" class="copy-button" data-copy="git clone https://github.com/LueApp/mini-keyboard.git && cd mini-keyboard">Copy</button>
+                </div>
+                <pre><code>git clone https://github.com/LueApp/mini-keyboard.git
 cd mini-keyboard</code></pre>
+              </li>
+              <li>
+                <div class="step-row">
+                  <span class="step-label">Install keyd</span>
+                  <button type="button" class="copy-button" data-copy="sudo apt-get install -y keyd">Copy</button>
+                </div>
+                <pre><code>sudo apt-get install -y keyd</code></pre>
+              </li>
+              <li>
+                <div class="step-row">
+                  <span class="step-label">Apply the mini-pad config</span>
+                  <button type="button" class="copy-button" data-copy="./install.sh">Copy</button>
+                </div>
+                <pre><code>./install.sh</code></pre>
+              </li>
+              <li>
+                <div class="step-row">
+                  <span class="step-label">Launch the HUD</span>
+                  <button type="button" class="copy-button" data-copy="hud/install-hud.sh">Copy</button>
+                </div>
+                <pre><code>hud/install-hud.sh</code></pre>
+              </li>
+            </ol>
           </article>
-          <article class="command-card">
-            <div class="command-head">
-              <h3>2. Install keyd</h3>
-              <button type="button" class="copy-button" data-copy="sudo apt-get install -y keyd">Copy</button>
+
+          <article class="setup-card w2l-card" aria-labelledby="w2l-title">
+            <div class="setup-head">
+              <h3 id="w2l-title">web2local console</h3>
+              <span class="w2l-status" id="w2lStatus" data-state="checking" role="status" aria-live="polite">checking&hellip;</span>
             </div>
-            <pre><code>sudo apt-get install -y keyd</code></pre>
-          </article>
-          <article class="command-card">
-            <div class="command-head">
-              <h3>3. Apply the mini-pad config</h3>
-              <button type="button" class="copy-button" data-copy="./install.sh">Copy</button>
+            <p class="setup-lead">
+              No terminal needed for upkeep. Each button runs one named action in
+              <code>tools/web2local-minipad.sh</code> &mdash; never free-form shell input &mdash;
+              and web2local asks you to approve it first.
+            </p>
+
+            <div class="w2l-row">
+              <label for="w2lPort">Port</label>
+              <input id="w2lPort" type="number" inputmode="numeric" value="7878" autocomplete="off" />
+              <button type="button" class="w2l-ghost" id="w2lCheck">Check</button>
+              <button type="button" class="w2l-ghost" data-runner="access" data-needs-w2l disabled>Request access</button>
+              <a class="w2l-ghost w2l-get" id="w2lGet" href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener" hidden>Get web2local &#8599;</a>
             </div>
-            <pre><code>./install.sh</code></pre>
-          </article>
-          <article class="command-card">
-            <div class="command-head">
-              <h3>4. Launch the HUD</h3>
-              <button type="button" class="copy-button" data-copy="hud/install-hud.sh">Copy</button>
+
+            <label class="w2l-pathlabel" for="localPath">Local checkout path</label>
+            <input id="localPath" class="w2l-input" value="/home/lue/boring/mini-keyboard" spellcheck="false" autocomplete="off" />
+
+            <div class="w2l-actions" aria-label="web2local actions">
+              <button type="button" class="w2l-action" data-runner="status" data-needs-w2l disabled>Repo / keyd / HUD status</button>
+              <button type="button" class="w2l-action" data-runner="validate" data-needs-w2l disabled>Validate scripts</button>
+              <button type="button" class="w2l-action" data-runner="keyd-log" data-needs-w2l disabled>Recent keyd log</button>
+              <button type="button" class="w2l-action w2l-action-go" data-runner="install-hud" data-needs-w2l disabled>Install HUD</button>
+              <button type="button" class="w2l-action w2l-action-danger" data-runner="uninstall-hud" data-needs-w2l disabled>Uninstall HUD</button>
             </div>
-            <pre><code>hud/install-hud.sh</code></pre>
+
+            <p class="w2l-msg" id="w2lMsg">Start web2local locally, then press <strong>Check</strong>.</p>
+            <pre class="w2l-log" id="runnerOutput" aria-live="polite" hidden></pre>
           </article>
         </div>
       </div>

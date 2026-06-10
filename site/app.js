@@ -139,28 +139,53 @@ document.querySelectorAll('.copy-button').forEach((button) => {
   });
 });
 
-// ── web2local launcher ─────────────────────────────────────────────────────
-const runnerOutput = document.querySelector('#runnerOutput code');
-const runnerStatus = document.querySelector('#runnerStatus');
+// ── web2local console ──────────────────────────────────────────────────────
+// Detection-driven: probe the daemon, reflect state in a status chip, and gate
+// the action buttons until it is reachable. Each action runs ONE named helper
+// action — never free-form shell input — and web2local prompts for approval.
+const w2lStatus = document.querySelector('#w2lStatus');
+const w2lMsg = document.querySelector('#w2lMsg');
+const w2lPortInput = document.querySelector('#w2lPort');
+const w2lCheckBtn = document.querySelector('#w2lCheck');
+const w2lGet = document.querySelector('#w2lGet');
+const runnerOutput = document.querySelector('#runnerOutput');
 const localPath = document.querySelector('#localPath');
 const needsW2l = [...document.querySelectorAll('[data-needs-w2l]')];
-const w2l = window.Web2Local ? new window.Web2Local() : null;
 
+const STORE = { port: 'minipad.w2lPort', path: 'minipad.localPath' };
 const CONFIRMS = {
   'install-hud': 'Install the mini-keyboard HUD on this machine through web2local?',
   'uninstall-hud': 'Uninstall the mini-keyboard HUD from this machine through web2local?'
 };
 
-function setOutput(text) {
-  if (runnerOutput) runnerOutput.textContent = text;
+function store(key, value) { try { localStorage.setItem(key, value); } catch { /* ignore */ } }
+function recall(key) { try { return localStorage.getItem(key); } catch { return null; } }
+
+function w2lPort() {
+  const n = parseInt(w2lPortInput && w2lPortInput.value, 10);
+  return Number.isFinite(n) && n > 0 ? n : 7878;
 }
 
-function setStatus(text) {
-  if (runnerStatus) runnerStatus.textContent = `web2local status: ${text}`;
+function client() {
+  return window.Web2Local ? new window.Web2Local(w2lPort()) : null;
 }
 
-function setHelperEnabled(enabled) {
+function setBadge(state, text) {
+  if (w2lStatus) { w2lStatus.dataset.state = state; w2lStatus.textContent = text; }
+}
+
+function setMsg(html) {
+  if (w2lMsg) w2lMsg.innerHTML = html;
+}
+
+function setActionsEnabled(enabled) {
   needsW2l.forEach((button) => { button.disabled = !enabled; });
+}
+
+function showOutput(text) {
+  if (!runnerOutput) return;
+  runnerOutput.hidden = false;
+  runnerOutput.textContent = text;
 }
 
 function helperPath() {
@@ -168,76 +193,93 @@ function helperPath() {
   return `${path}/tools/web2local-minipad.sh`;
 }
 
-// Passive check: is the daemon reachable? Updates the status line and gates the
-// helper buttons. Never throws — a missing daemon is the normal first state.
-async function refreshDaemon() {
+// Probe the daemon and drive the whole card's state. Never throws.
+async function checkDaemon() {
+  const w2l = client();
   if (!w2l) {
-    setStatus('client library failed to load.');
-    setHelperEnabled(false);
+    setBadge('absent', 'client failed');
+    setActionsEnabled(false);
+    setMsg('The web2local client library failed to load. Reload the page.');
     return false;
   }
+  setBadge('checking', 'checking…');
+  const port = w2lPort();
   const up = await w2l.isRunning();
   if (up) {
-    setStatus('running on 127.0.0.1:7878.');
+    setBadge('present', 'detected');
+    setActionsEnabled(true);
+    if (w2lGet) w2lGet.hidden = true;
+    try { await w2l.addToGraylist(window.location.origin); } catch { /* approval still per-action */ }
+    setMsg(`Detected on port <strong>${port}</strong>. Pick an action — web2local asks you to approve each one.`);
   } else {
-    setStatus('not reachable — start web2local locally, then Request access.');
+    setBadge('absent', 'not running');
+    setActionsEnabled(false);
+    if (w2lGet) w2lGet.hidden = false;
+    setMsg(`Not detected on port <strong>${port}</strong>. Start web2local locally, then press <strong>Check</strong>.`);
   }
-  setHelperEnabled(up);
   return up;
 }
 
 async function runHelper(actionName) {
   const confirmMsg = CONFIRMS[actionName];
   if (confirmMsg && !window.confirm(confirmMsg)) return;
-
   const command = helperPath();
-  setOutput(`running: ${command} ${actionName}`);
-  const result = await w2l.run(command, [actionName]);
-  setOutput([
-    `$ ${command} ${actionName}`,
-    '',
-    result.stdout || '',
-    result.stderr ? `stderr:\n${result.stderr}` : '',
-    `exit_code: ${result.exit_code}`
-  ].filter(Boolean).join('\n'));
+  setBadge('working', 'working…');
+  showOutput(`$ ${command} ${actionName}\n\nrunning…`);
+  try {
+    const result = await client().run(command, [actionName]);
+    showOutput([
+      `$ ${command} ${actionName}`,
+      '',
+      result.stdout || '',
+      result.stderr ? `stderr:\n${result.stderr}` : '',
+      `exit_code: ${result.exit_code}`
+    ].filter(Boolean).join('\n'));
+  } finally {
+    setBadge('present', 'detected');
+  }
 }
 
 async function handleRunner(actionName) {
-  if (!w2l) {
-    setOutput('web2local client library failed to load. Reload the page.');
+  if (!window.Web2Local) {
+    showOutput('web2local client library failed to load. Reload the page.');
     return;
   }
   try {
-    if (actionName === 'daemon') {
-      setOutput('checking http://127.0.0.1:7878/status');
-      const up = await refreshDaemon();
-      if (up) setOutput(JSON.stringify(await w2l.status(), null, 2));
-      else setOutput('web2local is not reachable on 127.0.0.1:7878.\nStart it locally and try again.');
-      return;
-    }
     if (actionName === 'access') {
-      setOutput(`requesting access for ${window.location.origin}`);
-      const access = await w2l.requestAccess();
-      setOutput(JSON.stringify(access, null, 2));
-      await refreshDaemon();
+      setBadge('working', 'working…');
+      showOutput(`requesting access for ${window.location.origin}…`);
+      const access = await client().requestAccess();
+      showOutput(JSON.stringify(access, null, 2));
+      await checkDaemon();
       return;
     }
     await runHelper(actionName);
   } catch (error) {
-    setOutput([
+    showOutput([
       'web2local request failed.',
       '',
       String((error && error.message) || error),
       '',
-      'Start web2local locally and grant this site access (Request access).'
+      'Make sure web2local is running and you approved this action.'
     ].join('\n'));
+    await checkDaemon();
   }
 }
 
 document.querySelectorAll('[data-runner]').forEach((button) => {
   button.addEventListener('click', () => handleRunner(button.dataset.runner));
 });
+if (w2lCheckBtn) w2lCheckBtn.addEventListener('click', () => checkDaemon());
+if (w2lPortInput) w2lPortInput.addEventListener('change', () => { store(STORE.port, w2lPortInput.value); checkDaemon(); });
+if (localPath) localPath.addEventListener('change', () => store(STORE.path, localPath.value));
+
+// Restore remembered port / checkout path.
+const savedPort = recall(STORE.port);
+if (savedPort && w2lPortInput) w2lPortInput.value = savedPort;
+const savedPath = recall(STORE.path);
+if (savedPath && localPath) localPath.value = savedPath;
 
 // ── Boot ───────────────────────────────────────────────────────────────────
 renderMode('apps');
-refreshDaemon();
+checkDaemon();

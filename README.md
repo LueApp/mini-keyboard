@@ -184,6 +184,22 @@ text (`macro(git space status enter)`), or a keyd action (`toggle`, `swap`,
 - **Chord won't trigger:** press the two keys simultaneously; if still hard,
   raise `chord_timeout` in `[global]` (default 50 ms).
 
+## Web guide
+
+A static introduction + usage guide lives in `site/` (Cloudflare Pages /
+`wrangler` assets). It shows the layout and mode maps, the manual install flow,
+and — for anyone running [web2local](https://github.com/LueApp/web2local-bridge)
+— buttons that call `tools/web2local-minipad.sh` for a fixed set of named
+actions (status, validate, recent keyd log, install/uninstall HUD). The page
+only ever sends a named action, never free-form shell input.
+
+```bash
+npm install        # one-time: pulls wrangler
+npm run dev        # preview the site locally
+npm run check      # wrangler deploy --dry-run
+npm run deploy     # publish (or connect the repo in the Cloudflare dashboard)
+```
+
 ## Files
 
 ```
@@ -197,4 +213,6 @@ hud/apply-config.sh    root helper (pkexec): validate + install + restart + roll
 hud/install-hud.sh     KWin pin rule + systemd --user autostart for the panel
 hud/uninstall-hud.sh   remove the panel rule + service
 tools/keyout.py        print the keys keyd emits (reads its virtual device)
+tools/web2local-minipad.sh  narrow named-action helper the web guide calls via web2local
+site/                  static intro + usage guide (Cloudflare assets); wrangler.jsonc deploys it
 ```

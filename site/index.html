@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <meta name="description" content="mini-keyboard turns a generic 4x3 USB mini keyboard into a three-mode keyd macro pad with a live HUD and in-panel editor." />
+  <title>mini-keyboard | Modal macro pad guide</title>
+  <link rel="alternate" hreflang="zh" href="index.zh.html" />
+  <link rel="preload" href="assets/minipad-preview.svg" as="image" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="mini-keyboard home">
+      <span class="brand-mark" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </span>
+      <span>mini-keyboard</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#setup">Setup</a>
+      <a href="#modes">Modes</a>
+      <a href="#edit">Edit</a>
+      <a href="#troubleshooting">Fix</a>
+    </nav>
+    <a class="header-link" href="index.zh.html" hreflang="zh" lang="zh">中文</a>
+    <a class="header-link" href="https://github.com/LueApp/mini-keyboard">GitHub</a>
+  </header>
+
+  <p id="srStatus" class="visually-hidden" role="status" aria-live="polite"></p>
+
+  <main id="top">
+    <section class="hero-band" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">keyd profile + live HUD for a 4x3 macro pad</p>
+          <h1 id="hero-title">mini-keyboard</h1>
+          <p class="hero-text">
+            Turn the generic USB mini keyboard <code>4132:2107</code> into a modal macro pad:
+            application shortcuts, navigation keys, and a calculator-style number layer. The
+            companion HUD shows the active map, collapses when idle, and lets you edit mappings
+            without hand-writing keyd config. Only the pad is remapped &mdash; every other
+            keyboard stays untouched, on KDE Plasma 6 / Wayland.
+          </p>
+          <div class="hero-actions" aria-label="Main actions">
+            <a class="primary-action" href="#setup">Get started</a>
+            <a class="secondary-action" href="#modes">Browse modes</a>
+          </div>
+          <dl class="fact-row" aria-label="Compatibility facts">
+            <div><dt>Input layer</dt><dd>keyd</dd></div>
+            <div><dt>Desktop</dt><dd>KDE Plasma 6 / Wayland</dd></div>
+            <div><dt>Device</dt><dd>4x3 USB pad</dd></div>
+          </dl>
+        </div>
+        <figure class="hero-visual">
+          <img src="assets/minipad-preview.svg" alt="Preview of the 4 by 3 macro pad and the live HUD panel." width="1120" height="760" />
+        </figure>
+      </div>
+    </section>
+
+    <section id="setup" class="section-band section-light" aria-labelledby="setup-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="eyebrow">Get started</p>
+          <h2 id="setup-title">Install once in a terminal &mdash; then drive upkeep from the browser.</h2>
+          <p>
+            The keyd profile is a one-time terminal install. After that, if you run
+            <a href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener">web2local</a>
+            &mdash; a tiny local daemon that runs an allowlisted action only after you approve it in a
+            native dialog, on loopback only &mdash; this page becomes a console for status,
+            validation, keyd logs, and installing or removing the HUD, no terminal needed.
+          </p>
+        </div>
+
+        <div class="setup-grid">
+          <article class="setup-card" aria-labelledby="manual-title">
+            <div class="setup-head">
+              <h3 id="manual-title">Manual setup</h3>
+              <span class="setup-tag">terminal &middot; one time</span>
+            </div>
+            <p class="setup-lead">
+              The installer copies <code>config/default.conf</code> to <code>/etc/keyd/</code>,
+              restarts keyd, and installs the HUD editor's root helper. Run these four steps once.
+            </p>
+            <ol class="install-steps">
+              <li>
+                <div class="step-row">
+                  <span class="step-label">Clone the repo</span>
+                  <button type="button" class="copy-button" data-copy="git clone https://github.com/LueApp/mini-keyboard.git && cd mini-keyboard">Copy</button>
+                </div>
+                <pre><code>git clone https://github.com/LueApp/mini-keyboard.git
+cd mini-keyboard</code></pre>
+              </li>
+              <li>
+                <div class="step-row">
+                  <span class="step-label">Install keyd</span>
+                  <button type="button" class="copy-button" data-copy="sudo apt-get install -y keyd">Copy</button>
+                </div>
+                <pre><code>sudo apt-get install -y keyd</code></pre>
+              </li>
+              <li>
+                <div class="step-row">
+                  <span class="step-label">Apply the mini-pad config</span>
+                  <button type="button" class="copy-button" data-copy="./install.sh">Copy</button>
+                </div>
+                <pre><code>./install.sh</code></pre>
+              </li>
+              <li>
+                <div class="step-row">
+                  <span class="step-label">Launch the HUD</span>
+                  <button type="button" class="copy-button" data-copy="hud/install-hud.sh">Copy</button>
+                </div>
+                <pre><code>hud/install-hud.sh</code></pre>
+              </li>
+            </ol>
+          </article>
+
+          <article class="setup-card w2l-card" aria-labelledby="w2l-title">
+            <div class="setup-head">
+              <h3 id="w2l-title">web2local console</h3>
+              <span class="w2l-status" id="w2lStatus" data-state="checking" role="status" aria-live="polite">checking&hellip;</span>
+            </div>
+            <p class="setup-lead">
+              No terminal needed for upkeep. Each button runs one named action in
+              <code>tools/web2local-minipad.sh</code> &mdash; never free-form shell input &mdash;
+              and web2local asks you to approve it first.
+            </p>
+
+            <div class="w2l-row">
+              <label for="w2lPort">Port</label>
+              <input id="w2lPort" type="number" inputmode="numeric" value="7878" autocomplete="off" />
+              <button type="button" class="w2l-ghost" id="w2lCheck">Check</button>
+              <button type="button" class="w2l-ghost" data-runner="access" data-needs-w2l disabled>Request access</button>
+              <a class="w2l-ghost w2l-get" id="w2lGet" href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener" hidden>Get web2local &#8599;</a>
+            </div>
+
+            <label class="w2l-pathlabel" for="localPath">Local checkout path</label>
+            <input id="localPath" class="w2l-input" value="/home/lue/boring/mini-keyboard" spellcheck="false" autocomplete="off" />
+
+            <div class="w2l-actions" aria-label="web2local actions">
+              <button type="button" class="w2l-action" data-runner="status" data-needs-w2l disabled>Repo / keyd / HUD status</button>
+              <button type="button" class="w2l-action" data-runner="validate" data-needs-w2l disabled>Validate scripts</button>
+              <button type="button" class="w2l-action" data-runner="keyd-log" data-needs-w2l disabled>Recent keyd log</button>
+              <button type="button" class="w2l-action w2l-action-go" data-runner="install-hud" data-needs-w2l disabled>Install HUD</button>
+              <button type="button" class="w2l-action w2l-action-danger" data-runner="uninstall-hud" data-needs-w2l disabled>Uninstall HUD</button>
+            </div>
+
+            <p class="w2l-msg" id="w2lMsg">Start web2local locally, then press <strong>Check</strong>.</p>
+            <pre class="w2l-log" id="runnerOutput" aria-live="polite" hidden></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="modes" class="section-band" aria-labelledby="modes-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="eyebrow">Mode guide</p>
+          <h2 id="modes-title">Three maps, switched by row-corner chords.</h2>
+          <p>
+            Press both outer keys of a row at the same time. Single taps still run their normal
+            per-mode action; only the two-key chord changes mode. The pad boots in apps mode.
+          </p>
+        </div>
+
+        <div class="mode-workbench">
+          <div class="mode-tabs" role="tablist" aria-label="Mode map">
+            <button type="button" class="mode-tab active" id="tab-apps" role="tab" aria-selected="true" aria-controls="modePanel" tabindex="0" data-mode="apps">apps <span>1+3</span></button>
+            <button type="button" class="mode-tab" id="tab-nav" role="tab" aria-selected="false" aria-controls="modePanel" tabindex="-1" data-mode="nav">nav <span>4+6</span></button>
+            <button type="button" class="mode-tab" id="tab-num" role="tab" aria-selected="false" aria-controls="modePanel" tabindex="-1" data-mode="num">num <span>7+9</span></button>
+          </div>
+
+          <div class="mode-panel" id="modePanel" role="tabpanel" tabindex="0" aria-labelledby="tab-apps">
+            <div class="pad-grid" id="padGrid"></div>
+            <aside class="mode-notes" aria-label="Selected mode details" aria-live="polite">
+              <h3 id="modeTitle">apps mode</h3>
+              <p id="modeDescription">
+                Clipboard, tab, save, find, close, and window-switching shortcuts.
+              </p>
+              <dl>
+                <div><dt>Base mode</dt><dd id="modeBase">Yes</dd></div>
+                <div><dt>Chord</dt><dd id="modeChord">1+3</dd></div>
+                <div><dt>Layer action</dt><dd id="modeAction">clear()</dd></div>
+              </dl>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-band section-green" aria-labelledby="workflow-title">
+      <div class="section-inner">
+        <div class="section-heading compact">
+          <p class="eyebrow">Daily use</p>
+          <h2 id="workflow-title">The HUD only stays large when it is useful.</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>Unplugged</h3>
+            <p>The panel hides when the configured USB pad is not connected.</p>
+          </article>
+          <article class="feature-card">
+            <h3>Connected and idle</h3>
+            <p>After about 10 seconds, the HUD collapses to a small draggable mode dot.</p>
+          </article>
+          <article class="feature-card">
+            <h3>In use</h3>
+            <p>Any pad activity or a click on the dot expands the full key map immediately.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="edit" class="section-band" aria-labelledby="edit-title">
+      <div class="section-inner split-layout">
+        <div>
+          <p class="eyebrow">Editing guideline</p>
+          <h2 id="edit-title">Use the panel editor for regular remaps.</h2>
+          <p>
+            Click the edit control in the HUD, choose a mode, then click any key cell. The save
+            path writes through <code>pkexec /usr/local/sbin/minipad-apply</code>, validates the
+            keyd file, restarts keyd, and rolls back automatically if the daemon reports errors.
+          </p>
+        </div>
+        <ol class="step-list">
+          <li>
+            <span>Open edit mode</span>
+            <p>Select the mode pill you want to change, or add a new mode with its own two-key chord.</p>
+          </li>
+          <li>
+            <span>Remap a key</span>
+            <p>Pick a preset or type a raw keyd value such as <code>C-c</code>, <code>up</code>, <code>5</code>, or <code>macro(text enter)</code>.</p>
+          </li>
+          <li>
+            <span>Save safely</span>
+            <p>The helper rejects symlinked input, inline comments, unsafe mode names, duplicate chords, and keyd <code>command()</code> bindings.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="troubleshooting" class="section-band section-dark" aria-labelledby="trouble-title">
+      <div class="section-inner">
+        <div class="section-heading compact">
+          <p class="eyebrow">Troubleshooting</p>
+          <h2 id="trouble-title">Useful checks when a mapping does not behave.</h2>
+        </div>
+        <div class="trouble-grid">
+          <article class="trouble-item">
+            <h3>Config errors</h3>
+            <pre><code>journalctl -eu keyd</code></pre>
+          </article>
+          <article class="trouble-item">
+            <h3>Discover device IDs</h3>
+            <pre><code>sudo keyd.rvaiya monitor</code></pre>
+          </article>
+          <article class="trouble-item">
+            <h3>Watch mode changes</h3>
+            <pre><code>sg keyd -c 'keyd.rvaiya listen'</code></pre>
+          </article>
+          <article class="trouble-item">
+            <h3>Post-remap output</h3>
+            <pre><code>python3 tools/keyout.py</code></pre>
+          </article>
+        </div>
+        <p class="panic-note">
+          Panic recovery: hold <code>backspace + esc + enter</code> to kill keyd and return raw input if keys ever wedge.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="section-inner footer-inner">
+      <p>mini-keyboard remaps only the configured USB pad. Other keyboards keep their normal behavior.</p>
+      <a href="#top">Back to top</a>
+    </div>
+  </footer>
+
+  <script src="web2local-client.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

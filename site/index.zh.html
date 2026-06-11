@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <meta name="description" content="mini-keyboard 把一块通用 4x3 USB 迷你键盘变成三模式的 keyd 宏键盘，配有实时 HUD 和面板内编辑器。" />
+  <title>mini-keyboard | 模态宏键盘指南</title>
+  <link rel="alternate" hreflang="en" href="index.html" />
+  <link rel="preload" href="assets/minipad-preview.svg" as="image" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="mini-keyboard 首页">
+      <span class="brand-mark" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </span>
+      <span>mini-keyboard</span>
+    </a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="#setup">安装</a>
+      <a href="#modes">模式</a>
+      <a href="#edit">编辑</a>
+      <a href="#troubleshooting">排错</a>
+    </nav>
+    <a class="header-link" href="index.html" hreflang="en" lang="en">EN</a>
+    <a class="header-link" href="https://github.com/LueApp/mini-keyboard">GitHub</a>
+  </header>
+
+  <p id="srStatus" class="visually-hidden" role="status" aria-live="polite"></p>
+
+  <main id="top">
+    <section class="hero-band" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">为 4x3 宏键盘打造的 keyd 配置 + 实时 HUD</p>
+          <h1 id="hero-title">mini-keyboard</h1>
+          <p class="hero-text">
+            把通用 USB 迷你键盘 <code>4132:2107</code> 变成模态宏键盘：
+            应用快捷键、导航键，以及计算器风格的数字层。配套 HUD 会显示当前生效的
+            映射，空闲时折叠，并让你无需手写 keyd 配置即可编辑映射。只有这块键盘会被
+            重映射——其他所有键盘都保持原样，运行于 KDE Plasma 6 / Wayland。
+          </p>
+          <div class="hero-actions" aria-label="主要操作">
+            <a class="primary-action" href="#setup">开始使用</a>
+            <a class="secondary-action" href="#modes">浏览模式</a>
+          </div>
+          <dl class="fact-row" aria-label="兼容性信息">
+            <div><dt>输入层</dt><dd>keyd</dd></div>
+            <div><dt>桌面环境</dt><dd>KDE Plasma 6 / Wayland</dd></div>
+            <div><dt>设备</dt><dd>4x3 USB 键盘</dd></div>
+          </dl>
+        </div>
+        <figure class="hero-visual">
+          <img src="assets/minipad-preview.svg" alt="4 行 3 列宏键盘与实时 HUD 面板的预览。" width="1120" height="760" />
+        </figure>
+      </div>
+    </section>
+
+    <section id="setup" class="section-band section-light" aria-labelledby="setup-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="eyebrow">开始使用</p>
+          <h2 id="setup-title">在终端里安装一次——之后从浏览器完成日常维护。</h2>
+          <p>
+            keyd 配置只需在终端里一次性安装。完成之后，如果你运行
+            <a href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener">web2local</a>
+            ——一个小型本地守护进程，只在你于原生对话框中批准后才执行白名单内的操作，且仅限回环地址——
+            本页就会变成一个控制台，用于查看状态、校验、keyd 日志，以及安装或移除 HUD，无需终端。
+          </p>
+        </div>
+
+        <div class="setup-grid">
+          <article class="setup-card" aria-labelledby="manual-title">
+            <div class="setup-head">
+              <h3 id="manual-title">手动安装</h3>
+              <span class="setup-tag">终端 &middot; 一次性</span>
+            </div>
+            <p class="setup-lead">
+              安装脚本会把 <code>config/default.conf</code> 复制到 <code>/etc/keyd/</code>，
+              重启 keyd，并安装 HUD 编辑器的 root 辅助程序。以下四步只需执行一次。
+            </p>
+            <ol class="install-steps">
+              <li>
+                <div class="step-row">
+                  <span class="step-label">克隆仓库</span>
+                  <button type="button" class="copy-button" data-copy="git clone https://github.com/LueApp/mini-keyboard.git && cd mini-keyboard">复制</button>
+                </div>
+                <pre><code>git clone https://github.com/LueApp/mini-keyboard.git
+cd mini-keyboard</code></pre>
+              </li>
+              <li>
+                <div class="step-row">
+                  <span class="step-label">安装 keyd</span>
+                  <button type="button" class="copy-button" data-copy="sudo apt-get install -y keyd">复制</button>
+                </div>
+                <pre><code>sudo apt-get install -y keyd</code></pre>
+              </li>
+              <li>
+                <div class="step-row">
+                  <span class="step-label">应用迷你键盘配置</span>
+                  <button type="button" class="copy-button" data-copy="./install.sh">复制</button>
+                </div>
+                <pre><code>./install.sh</code></pre>
+              </li>
+              <li>
+                <div class="step-row">
+                  <span class="step-label">启动 HUD</span>
+                  <button type="button" class="copy-button" data-copy="hud/install-hud.sh">复制</button>
+                </div>
+                <pre><code>hud/install-hud.sh</code></pre>
+              </li>
+            </ol>
+          </article>
+
+          <article class="setup-card w2l-card" aria-labelledby="w2l-title">
+            <div class="setup-head">
+              <h3 id="w2l-title">web2local 控制台</h3>
+              <span class="w2l-status" id="w2lStatus" data-state="checking" role="status" aria-live="polite">检测中&hellip;</span>
+            </div>
+            <p class="setup-lead">
+              日常维护无需终端。每个按钮只运行 <code>tools/web2local-minipad.sh</code> 中一个
+              具名操作——绝不接受任意 shell 输入——并且 web2local 会先请你批准。
+            </p>
+
+            <div class="w2l-row">
+              <label for="w2lPort">端口</label>
+              <input id="w2lPort" type="number" inputmode="numeric" value="7878" autocomplete="off" />
+              <button type="button" class="w2l-ghost" id="w2lCheck">检测</button>
+              <button type="button" class="w2l-ghost" data-runner="access" data-needs-w2l disabled>请求访问</button>
+              <a class="w2l-ghost w2l-get" id="w2lGet" href="https://github.com/LueApp/web2local-bridge" target="_blank" rel="noopener" hidden>获取 web2local &#8599;</a>
+            </div>
+
+            <label class="w2l-pathlabel" for="localPath">本地检出路径</label>
+            <input id="localPath" class="w2l-input" value="/home/lue/boring/mini-keyboard" spellcheck="false" autocomplete="off" />
+
+            <div class="w2l-actions" aria-label="web2local 操作">
+              <button type="button" class="w2l-action" data-runner="status" data-needs-w2l disabled>仓库 / keyd / HUD 状态</button>
+              <button type="button" class="w2l-action" data-runner="validate" data-needs-w2l disabled>校验脚本</button>
+              <button type="button" class="w2l-action" data-runner="keyd-log" data-needs-w2l disabled>近期 keyd 日志</button>
+              <button type="button" class="w2l-action w2l-action-go" data-runner="install-hud" data-needs-w2l disabled>安装 HUD</button>
+              <button type="button" class="w2l-action w2l-action-danger" data-runner="uninstall-hud" data-needs-w2l disabled>卸载 HUD</button>
+            </div>
+
+            <p class="w2l-msg" id="w2lMsg">先在本地启动 web2local，然后点击<strong>检测</strong>。</p>
+            <pre class="w2l-log" id="runnerOutput" aria-live="polite" hidden></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="modes" class="section-band" aria-labelledby="modes-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="eyebrow">模式指南</p>
+          <h2 id="modes-title">三套映射，通过行角组合键切换。</h2>
+          <p>
+            同时按下一行两端的外侧键。单击仍然执行各模式下的常规操作；只有双键组合
+            才会切换模式。键盘启动时处于 apps 模式。
+          </p>
+        </div>
+
+        <div class="mode-workbench">
+          <div class="mode-tabs" role="tablist" aria-label="模式映射">
+            <button type="button" class="mode-tab active" id="tab-apps" role="tab" aria-selected="true" aria-controls="modePanel" tabindex="0" data-mode="apps">apps <span>1+3</span></button>
+            <button type="button" class="mode-tab" id="tab-nav" role="tab" aria-selected="false" aria-controls="modePanel" tabindex="-1" data-mode="nav">nav <span>4+6</span></button>
+            <button type="button" class="mode-tab" id="tab-num" role="tab" aria-selected="false" aria-controls="modePanel" tabindex="-1" data-mode="num">num <span>7+9</span></button>
+          </div>
+
+          <div class="mode-panel" id="modePanel" role="tabpanel" tabindex="0" aria-labelledby="tab-apps">
+            <div class="pad-grid" id="padGrid"></div>
+            <aside class="mode-notes" aria-label="所选模式详情" aria-live="polite">
+              <h3 id="modeTitle">apps 模式</h3>
+              <p id="modeDescription">
+                剪贴板、标签页、保存、查找、关闭以及窗口切换快捷键。
+              </p>
+              <dl>
+                <div><dt>基础模式</dt><dd id="modeBase">是</dd></div>
+                <div><dt>组合键</dt><dd id="modeChord">1+3</dd></div>
+                <div><dt>层操作</dt><dd id="modeAction">clear()</dd></div>
+              </dl>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-band section-green" aria-labelledby="workflow-title">
+      <div class="section-inner">
+        <div class="section-heading compact">
+          <p class="eyebrow">日常使用</p>
+          <h2 id="workflow-title">HUD 只在有用时才保持展开。</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>未连接</h3>
+            <p>当配置的 USB 键盘未接入时，面板会隐藏。</p>
+          </article>
+          <article class="feature-card">
+            <h3>已连接且空闲</h3>
+            <p>约 10 秒后，HUD 会折叠成一个可拖动的小模式圆点。</p>
+          </article>
+          <article class="feature-card">
+            <h3>使用中</h3>
+            <p>任何键盘活动或点击圆点都会立即展开完整的按键映射。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="edit" class="section-band" aria-labelledby="edit-title">
+      <div class="section-inner split-layout">
+        <div>
+          <p class="eyebrow">编辑准则</p>
+          <h2 id="edit-title">常规重映射请使用面板编辑器。</h2>
+          <p>
+            点击 HUD 中的编辑控件，选择一个模式，然后点击任意按键格。保存流程会通过
+            <code>pkexec /usr/local/sbin/minipad-apply</code> 写入，校验 keyd 文件，
+            重启 keyd，并在守护进程报错时自动回滚。
+          </p>
+        </div>
+        <ol class="step-list">
+          <li>
+            <span>进入编辑模式</span>
+            <p>选择你想修改的模式标签，或新增一个带有专属双键组合键的模式。</p>
+          </li>
+          <li>
+            <span>重映射按键</span>
+            <p>选择一个预设，或输入原始 keyd 值，例如 <code>C-c</code>、<code>up</code>、<code>5</code> 或 <code>macro(text enter)</code>。</p>
+          </li>
+          <li>
+            <span>安全保存</span>
+            <p>辅助程序会拒绝符号链接输入、行内注释、不安全的模式名、重复的组合键，以及 keyd 的 <code>command()</code> 绑定。</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="troubleshooting" class="section-band section-dark" aria-labelledby="trouble-title">
+      <div class="section-inner">
+        <div class="section-heading compact">
+          <p class="eyebrow">排错</p>
+          <h2 id="trouble-title">映射异常时有用的检查手段。</h2>
+        </div>
+        <div class="trouble-grid">
+          <article class="trouble-item">
+            <h3>配置错误</h3>
+            <pre><code>journalctl -eu keyd</code></pre>
+          </article>
+          <article class="trouble-item">
+            <h3>查找设备 ID</h3>
+            <pre><code>sudo keyd.rvaiya monitor</code></pre>
+          </article>
+          <article class="trouble-item">
+            <h3>观察模式切换</h3>
+            <pre><code>sg keyd -c 'keyd.rvaiya listen'</code></pre>
+          </article>
+          <article class="trouble-item">
+            <h3>重映射后的输出</h3>
+            <pre><code>python3 tools/keyout.py</code></pre>
+          </article>
+        </div>
+        <p class="panic-note">
+          紧急恢复：若按键卡死，按住 <code>backspace + esc + enter</code> 可终止 keyd 并恢复原始输入。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="section-inner footer-inner">
+      <p>mini-keyboard 只重映射配置的 USB 键盘。其他键盘保持正常行为。</p>
+      <a href="#top">回到顶部</a>
+    </div>
+  </footer>
+
+  <script src="web2local-client.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
